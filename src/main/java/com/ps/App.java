@@ -4,6 +4,7 @@ import com.ps.model.Book;
 import com.ps.repository.BookRepository;
 import com.ps.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class App
@@ -30,6 +31,15 @@ public class App
         for(var book : books){
             System.out.printf("Book: %s\n", book.getTitle());
         }
+
+//        books = repo.findAll();
+//
+//        var updatedEntries = books.stream().peek(x -> x.setRating(5)).toList();
+//
+//        var result = repo.update(updatedEntries);
+
+        var removedBook = repo.findById(3);
+        repo.delete(removedBook.get());
 //        var newBook  = new Book();
 //        newBook.setTitle("Java Cookbook");
 //        newBook = repo.save(newBook);

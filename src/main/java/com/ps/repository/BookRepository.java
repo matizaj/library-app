@@ -79,7 +79,13 @@ public class BookRepository extends BaseRepository implements Repository<Book> {
 
     @Override
     public void delete(Book book) {
-
+        String sql = "delete from book where id = ?";
+        try (var con = getConnection();
+            PreparedStatement prepStmt  = con.prepareStatement(sql);
+        ) {
+            prepStmt.setInt(1, book.getId());
+            prepStmt.execute();
+        } catch (SQLException e){e.printStackTrace();}
     }
 
     @Override
@@ -97,10 +103,40 @@ public class BookRepository extends BaseRepository implements Repository<Book> {
 
     @Override
     public int[] update(List<Book> books) {
-        String sql = "UPDATE book SET title = ? WHERE id = ?";
+        int[] records = {};
+        String sql = "UPDATE book SET title = ?, rating = ? WHERE id = ?";
         try (var con = getConnection();
         PreparedStatement prepStmt = con.prepareStatement(sql)
-        )
-        return new int[0];
+        ) {
+            for (var book: books) {
+                prepStmt.setString(1, book.getTitle());
+                prepStmt.setInt(2, book.getRating());
+                prepStmt.setInt(3, book.getId());
+
+                prepStmt.addBatch();
+            }
+
+            records = prepStmt.executeBatch();
+
+        } catch (SQLException e ) { e.printStackTrace();}
+        return records;
+    }
+
+    @Override
+    public int[] delete(List<Book> books) {
+        int[] records = {};
+
+        String sql = " delete from book where id = ?";
+
+        try (var con = getConnection();
+            PreparedStatement prepStmt = con.prepareStatement(sql);
+        ){
+            for(var book : books) {
+                prepStmt.setInt(1, book.getId());
+                prepStmt.addBatch();
+            }
+            records = prepStmt.executeBatch();
+        }catch (SQLException e ) {e.printStackTrace();}
+        return records;
     }
 }

@@ -4,6 +4,8 @@ public class Book {
     private int id;
     private String title;
 
+    private int rating;
+
     public int getId() {return id;}
 
     public String getTitle() {return title;}
@@ -12,4 +14,11 @@ public class Book {
     public void setTitle(String title) {this.title = title;}
 
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 }

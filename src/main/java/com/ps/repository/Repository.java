@@ -11,4 +11,5 @@ public interface Repository<T> {
     void delete(T t);
     void update(T t);
     int[] update(List<T> t);
+    int[] delete(List<T> t);
 }
