@@ -39,24 +39,42 @@ public class BookRepository extends BaseRepository implements Repository<Book> {
     @Override
     public List<Book> findAll() {
         List<Book> books = Collections.emptyList();
-        String sql = "select * from book";
-        try(
-                var conn = getConnection();
-                var stmt = conn.createStatement();
-                var rs = stmt.executeQuery(sql);
-                ) {
-            books = new ArrayList<>();
-            while(rs.next()) {
+        JdbcQueryTemplate<Book> template = new JdbcQueryTemplate<Book>() {
+            @Override
+            public Book mapItem(ResultSet rs) throws SQLException {
                 Book book = new Book();
                 book.setId(rs.getInt("id"));
                 book.setTitle(rs.getString("title"));
-                books.add(book);
+                book.setRating(rs.getInt("rating"));
+                return book;
             }
+        };
 
-
-        } catch (SQLException sqe){sqe.printStackTrace();}
+        books = template.queryForList("select * from book");
         return books;
     }
+
+//    @Override
+//    public List<Book> findAll() {
+//        List<Book> books = Collections.emptyList();
+//        String sql = "select * from book";
+//        try(
+//                var conn = getConnection();
+//                var stmt = conn.createStatement();
+//                var rs = stmt.executeQuery(sql);
+//                ) {
+//            books = new ArrayList<>();
+//            while(rs.next()) {
+//                Book book = new Book();
+//                book.setId(rs.getInt("id"));
+//                book.setTitle(rs.getString("title"));
+//                books.add(book);
+//            }
+//
+//
+//        } catch (SQLException sqe){sqe.printStackTrace();}
+//        return books;
+//    }
 
     @Override
     public Book save(Book book) {
